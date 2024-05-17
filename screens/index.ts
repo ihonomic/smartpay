@@ -1,25 +1,27 @@
 import SignInScreen from "./SignInScreen";
-import SignUpScreen from "./SignUpScreen";
+import SignUpScreen from "./SignUpEmail";
 import IdentityVerify from "./IdentityVerify";
-import OTPVerify from "./OTPVerify";
+import SignUpEmailVerify from "./SignUpEmailVerify";
 import ProfileCompleted from "./ProfileCompleted";
 import ResetPassword from "./ResetPassword";
 import SecurityPin from "./SecurityPin";
 import OnBoardingScreen from "./onboarding/Onboarding";
-import ProfileUpdate from "./ProfileUpdate";
+import SignUpProfile from "./SignUpProfile";
 import CreateNewPassword from "./CreateNewPassword";
 import Dashboard from "./Dashboard";
+import AuthenticateWithPin from "./AuthenticateWithPin";
 
 export {
   OnBoardingScreen,
   SignInScreen,
   SignUpScreen,
   IdentityVerify,
-  OTPVerify,
+  SignUpEmailVerify,
   ProfileCompleted,
   ResetPassword,
   SecurityPin,
-  ProfileUpdate,
+  SignUpProfile,
   CreateNewPassword,
   Dashboard,
+  AuthenticateWithPin,
 };

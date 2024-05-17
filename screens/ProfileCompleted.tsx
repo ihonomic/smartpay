@@ -3,9 +3,20 @@ import React from "react";
 import { COLORS } from "../theme";
 import Button from "../components/Button";
 import { useNavigation } from "@react-navigation/native";
+import { UserAccount } from "../store/userStore";
 
 const ProfileCompleted = () => {
   const navigation = useNavigation<any>();
+
+  // GLOBAL STATE
+  const {
+    userInfo: {
+      user: { full_name, email, country },
+    },
+    saveUser,
+    saveUserPin,
+  } = UserAccount();
+
   return (
     <View style={styles.container}>
       <Image
@@ -13,7 +24,7 @@ const ProfileCompleted = () => {
         width={100}
         height={100}
       />
-      <Text style={styles.title}>Congratulations, James</Text>
+      <Text style={styles.title}>Congratulations, {full_name}</Text>
       <Text style={styles.text}>
         You’ve completed the onboarding, you can start using
       </Text>

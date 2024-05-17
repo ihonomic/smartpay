@@ -4,6 +4,7 @@ import { Feather } from "@expo/vector-icons";
 import { COLORS } from "../theme";
 import { useNavigation } from "@react-navigation/native";
 import Button from "../components/Button";
+import RNAnimated from "react-native-animated-component";
 
 const CreateNewPassword = () => {
   const navigation = useNavigation<any>();
@@ -12,13 +13,15 @@ const CreateNewPassword = () => {
   return (
     <View style={styles.container}>
       <View style={styles.align}>
-        <Text style={{ fontWeight: "bold", marginTop: 30, fontSize: 25 }}>
-          Create New Password
-        </Text>
-        <Text style={styles.greetings}>
-          Please, enter a new password below different from the previous
-          password
-        </Text>
+        <RNAnimated animationDuration={700} appearFrom="right">
+          <Text style={{ fontWeight: "bold", marginTop: 30, fontSize: 25 }}>
+            Create New Password
+          </Text>
+          <Text style={styles.greetings}>
+            Please, enter a new password below different from the previous
+            password
+          </Text>
+        </RNAnimated>
       </View>
 
       <View style={styles.inputContainer}>

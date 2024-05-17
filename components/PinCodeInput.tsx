@@ -9,9 +9,11 @@ import { Octicons } from "@expo/vector-icons";
 const PinCodeInput = ({
   value,
   setValue,
+  onSubmit,
 }: {
   value: number[];
   setValue: any;
+  onSubmit: any;
 }) => {
   const navigation = useNavigation<any>();
 
@@ -86,12 +88,7 @@ const PinCodeInput = ({
       </View>
 
       <View style={{ alignItems: "center", marginTop: 30 }}>
-        <Button
-          onPress={() => {
-            navigation.navigate("ProfileCompleted");
-          }}
-          title={"Create Pin"}
-        />
+        <Button onPress={onSubmit} title={"Create Pin"} />
       </View>
 
       {/* NUMBER PAD  */}

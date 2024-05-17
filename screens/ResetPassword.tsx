@@ -5,6 +5,7 @@ import { COLORS } from "../theme";
 import { useNavigation } from "@react-navigation/native";
 import Button from "../components/Button";
 import { ResetIcon } from "../assets/svg";
+import RNAnimated from "react-native-animated-component";
 
 const ResetPassword = () => {
   const navigation = useNavigation<any>();
@@ -12,13 +13,15 @@ const ResetPassword = () => {
   return (
     <View style={styles.container}>
       <View style={styles.align}>
-        <ResetIcon />
-        <Text style={{ fontWeight: "bold", marginTop: 30, fontSize: 25 }}>
-          Passsword Recovery
-        </Text>
-        <Text style={styles.greetings}>
-          Enter your registered email below to receive password instructions
-        </Text>
+        <RNAnimated animationDuration={700} appearFrom="right">
+          <ResetIcon />
+          <Text style={{ fontWeight: "bold", marginTop: 30, fontSize: 25 }}>
+            Passsword Recovery
+          </Text>
+          <Text style={styles.greetings}>
+            Enter your registered email below to receive password instructions
+          </Text>
+        </RNAnimated>
       </View>
 
       <View style={{ alignItems: "center" }}>

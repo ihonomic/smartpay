@@ -4,10 +4,15 @@ import { COLORS } from "../theme";
 type IProps = {
   onPress: any;
   title: string;
+  disabled?: boolean;
 };
-const Button = ({ onPress, title }: IProps) => {
+const Button = ({ onPress, title, disabled = false }: IProps) => {
   return (
-    <TouchableOpacity onPress={onPress} style={styles.button}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.button, disabled && { opacity: 0.8 }]}
+      disabled={disabled}
+    >
       <Text style={styles.btnText}>{title}</Text>
     </TouchableOpacity>
   );

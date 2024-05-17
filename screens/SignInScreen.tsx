@@ -6,48 +6,138 @@ import { useNavigation } from "@react-navigation/native";
 import Button from "../components/Button";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { AppleIcon, GoogleIcon } from "../assets/svg";
+import RNAnimated from "react-native-animated-component";
+import { LoaderWithOverlay } from "../components/Loader";
+import { UserAccount } from "../store/userStore";
+import { notificationToaster } from "../components/Toast";
+import { loginUserAPI } from "../api/auth";
 
 const SignInScreen = () => {
   const navigation = useNavigation<any>();
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  const [errors, setErrors] = useState<any>(null);
+
+  // GLOBAL STATE
+  const {
+    userInfo: { token },
+    saveUser,
+  } = UserAccount();
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    device_name: "web",
+  });
+
+  const { email, password } = formData;
+
+  const disableBtn = false ? !email || !password : false;
+
+  const onSubmit = async () => {
+    setLoading(true);
+    const { status, message, data } = await loginUserAPI(formData);
+    setLoading(false);
+    if (status === "success") {
+      setFormData({
+        email: "",
+        password: "",
+        device_name: "web",
+      });
+      saveUser(data);
+      navigation.navigate("Dashboard");
+    } else {
+      setErrors(data);
+      notificationToaster("error", {
+        text1: "",
+        text2: message,
+      });
+    }
+  };
+
   return (
     <View style={styles.container}>
+      {/* COMPONENT USED  */}
+      <LoaderWithOverlay loading={loading} />
+
       <View style={styles.align}>
-        <Text style={{ fontWeight: "bold", fontSize: 25, marginTop: 30 }}>
-          Hi There! 👋
-        </Text>
-        <Text style={styles.greetings}>
-          Welcome back, Sign in to your account
-        </Text>
+        <RNAnimated animationDuration={700} appearFrom="right">
+          <Text style={{ fontWeight: "bold", fontSize: 25, marginTop: 30 }}>
+            Hi There! 👋
+          </Text>
+          <Text style={styles.greetings}>
+            Welcome back, Sign in to your account
+          </Text>
+        </RNAnimated>
       </View>
 
-      <View style={{ alignItems: "center" }}>
-        <View style={styles.inputContainer}>
-          <TextInput
-            autoCapitalize={"none"}
-            autoCorrect={false}
-            placeholder="Email"
-            style={styles.input}
-          />
+      <>
+        <View style={{ alignItems: "center" }}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              autoCapitalize={"none"}
+              autoCorrect={false}
+              placeholder="Email"
+              style={styles.input}
+              value={email}
+              onChangeText={(text) => {
+                setErrors(null);
+                setFormData({ ...formData, email: text });
+              }}
+            />
+          </View>
         </View>
-        <View style={styles.inputContainer}>
-          <TextInput
-            secureTextEntry={showPassword}
-            autoCapitalize={"none"}
-            autoCorrect={false}
-            placeholder="Password"
-            style={styles.input}
-          />
-          <Feather
-            name={showPassword ? "eye" : "eye-off"}
-            onPress={() => {
-              setShowPassword(!showPassword);
-            }}
-            size={25}
-            color={COLORS.darkGray}
-          />
+        <View style={styles.align}>
+          {errors?.email && (
+            <>
+              {errors?.email.map((item: any, index: number) => (
+                <Text style={{ color: COLORS.red }} key={index}>
+                  {item}
+                </Text>
+              ))}
+            </>
+          )}
         </View>
-      </View>
+      </>
+
+      <>
+        <View style={{ alignItems: "center" }}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              secureTextEntry={showPassword}
+              autoCapitalize={"none"}
+              autoCorrect={false}
+              placeholder="Password"
+              style={styles.input}
+              value={password}
+              onChangeText={(text) => {
+                setErrors(null);
+                setFormData({ ...formData, password: text });
+              }}
+            />
+            <Feather
+              name={showPassword ? "eye" : "eye-off"}
+              onPress={() => {
+                setShowPassword(!showPassword);
+              }}
+              size={25}
+              color={COLORS.darkGray}
+            />
+          </View>
+        </View>
+        <View style={styles.align}>
+          {errors?.password && (
+            <>
+              {errors?.password.map((item: any, index: number) => (
+                <Text style={{ color: COLORS.red }} key={index}>
+                  {item}
+                </Text>
+              ))}
+            </>
+          )}
+        </View>
+      </>
 
       <View style={styles.align}>
         <Text
@@ -59,7 +149,7 @@ const SignInScreen = () => {
       </View>
 
       <View style={{ alignItems: "center", margin: 12 }}>
-        <Button onPress={() => {}} title={"Sign In"} />
+        <Button onPress={onSubmit} title={"Sign In"} />
       </View>
 
       <View style={styles.break}>

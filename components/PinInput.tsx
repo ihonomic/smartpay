@@ -5,7 +5,15 @@ import NumberPad from "./NumberPad";
 import Button from "./Button";
 import { useNavigation } from "@react-navigation/native";
 
-const PinInput = ({ value, setValue }: { value: number[]; setValue: any }) => {
+const PinInput = ({
+  value,
+  setValue,
+  onSubmit,
+}: {
+  value: number[];
+  setValue: any;
+  onSubmit: any;
+}) => {
   const navigation = useNavigation<any>();
 
   const valueLength = value.length;
@@ -62,12 +70,7 @@ const PinInput = ({ value, setValue }: { value: number[]; setValue: any }) => {
       </Text>
 
       <View style={{ alignItems: "center", marginTop: 30 }}>
-        <Button
-          onPress={() => {
-            navigation.navigate("ProfileUpdate");
-          }}
-          title={"Confirm"}
-        />
+        <Button onPress={onSubmit} title={"Confirm"} />
       </View>
 
       {/* NUMBER PAD  */}

@@ -1,42 +1,87 @@
 import { StyleSheet, Text, View, TextInput } from "react-native";
 import React, { useState } from "react";
-import { Feather } from "@expo/vector-icons";
 import { COLORS } from "../theme";
 import { useNavigation } from "@react-navigation/native";
 import Button from "../components/Button";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { AppleIcon, GoogleIcon } from "../assets/svg";
+import { notificationToaster } from "../components/Toast";
+import { LoaderWithOverlay } from "../components/Loader";
+import RNAnimated from "react-native-animated-component";
+import { sendEmailCodeAPI } from "../api/auth";
 
 const SignUpScreen = () => {
   const navigation = useNavigation<any>();
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<any>(null);
+
+  const onSubmit = async () => {
+    setLoading(true);
+    const { status, message, data } = await sendEmailCodeAPI(email);
+    console.log(status, message, data);
+    setLoading(false);
+    if (status === "success") {
+      navigation.navigate("SignUpEmailVerify", {
+        token_email: data.token,
+        email: email,
+      });
+    } else {
+      setErrors(data);
+      notificationToaster("error", {
+        text1: "Error",
+        text2: message,
+      });
+    }
+  };
+
+  const disableBtn = true ? !email : false;
 
   return (
     <View style={styles.container}>
+      {/* COMPONENTS */}
+      <LoaderWithOverlay loading={loading} />
+
       <View style={styles.align}>
-        <Text style={{ fontWeight: "bold", fontSize: 25, marginTop: 30 }}>
-          Create a <Text style={{ color: COLORS.primary }}>Smartpay</Text>{" "}
-          {" \n"} account
-        </Text>
+        <RNAnimated animationDuration={700} appearFrom="right">
+          <Text style={{ fontWeight: "bold", fontSize: 25, marginTop: 30 }}>
+            Create a <Text style={{ color: COLORS.primary }}>Smartpay</Text>{" "}
+            {" \n"} account
+          </Text>
+        </RNAnimated>
       </View>
 
-      <View style={{ alignItems: "center" }}>
-        <View style={styles.inputContainer}>
-          <TextInput
-            autoCapitalize={"none"}
-            autoCorrect={false}
-            placeholder="Email"
-            style={styles.input}
-          />
+      <>
+        <View style={{ alignItems: "center" }}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              autoCapitalize={"none"}
+              autoCorrect={false}
+              placeholder="Email"
+              style={styles.input}
+              value={email}
+              onChangeText={(text) => {
+                setErrors(null);
+                setEmail(text);
+              }}
+            />
+          </View>
         </View>
-      </View>
+        <View style={styles.align}>
+          {errors?.email && (
+            <>
+              {errors?.email.map((item: any, index: number) => (
+                <Text style={{ color: COLORS.red }} key={index}>
+                  {item}
+                </Text>
+              ))}
+            </>
+          )}
+        </View>
+      </>
 
       <View style={{ alignItems: "center", margin: 12 }}>
-        <Button
-          onPress={() => {
-            navigation.navigate("OTPVerify");
-          }}
-          title={"Sign Up"}
-        />
+        <Button onPress={onSubmit} title={"Sign Up"} disabled={disableBtn} />
       </View>
 
       <View style={styles.break}>

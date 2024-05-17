@@ -8,23 +8,32 @@ import {
   SignInScreen,
   SignUpScreen,
   IdentityVerify,
-  OTPVerify,
+  SignUpProfile,
   ProfileCompleted,
   ResetPassword,
   SecurityPin,
-  ProfileUpdate,
+  SignUpEmailVerify,
   OnBoardingScreen,
   CreateNewPassword,
   Dashboard,
+  AuthenticateWithPin,
 } from "./screens";
 import { BackIcon } from "./assets/svg";
+import Toast from "react-native-toast-message";
+import { UserAccount } from "./store/userStore";
 
 const Stack = createStackNavigator();
 
 export default function App() {
+  // GLOBAL STATE
+  const { isAuthenticated } = UserAccount();
+
+  const initialRoute = isAuthenticated ? "AuthenticateWithPin" : "OnBoarding";
+
   return (
     <NavigationContainer>
       <Stack.Navigator
+        initialRouteName={initialRoute}
         screenOptions={{
           headerLeft: (props) => (
             <TouchableOpacity style={{ margin: 12, marginBottom: 13 }}>
@@ -43,13 +52,18 @@ export default function App() {
         <Stack.Screen name="SignUp" component={SignUpScreen} />
         <Stack.Screen name="IdentifyVerify" component={IdentityVerify} />
         <Stack.Screen name="ResetPassword" component={ResetPassword} />
-        <Stack.Screen name="OTPVerify" component={OTPVerify} />
-        <Stack.Screen name="ProfileUpdate" component={ProfileUpdate} />
+        <Stack.Screen name="SignUpProfile" component={SignUpProfile} />
+        <Stack.Screen name="SignUpEmailVerify" component={SignUpEmailVerify} />
         <Stack.Screen name="SecurityPin" component={SecurityPin} />
         <Stack.Screen name="ProfileCompleted" component={ProfileCompleted} />
         <Stack.Screen name="CreateNewPassword" component={CreateNewPassword} />
         <Stack.Screen name="Dashboard" component={Dashboard} />
+        <Stack.Screen
+          name="AuthenticateWithPin"
+          component={AuthenticateWithPin}
+        />
       </Stack.Navigator>
+      <Toast />
     </NavigationContainer>
   );
 }

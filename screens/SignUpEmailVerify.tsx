@@ -1,67 +1,66 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { COLORS } from "../theme";
-import { useNavigation } from "@react-navigation/native";
-import PinCodeInput from "../components/PinCodeInput";
+
+import PinInput from "../components/PinInput";
 import RNAnimated from "react-native-animated-component";
+import { verifyEmailCodeAPI } from "../api/auth";
+import { notificationToaster } from "../components/Toast";
 import { LoaderWithOverlay } from "../components/Loader";
-import { UserAccount } from "../store/userStore";
 
-const SecurityPin = () => {
-  const navigation = useNavigation<any>();
-
-  // GLOBAL STATE
-  const {
-    userInfo: { token },
-    saveUser,
-    saveUserPin,
-  } = UserAccount();
-
+const OTPVerify = ({ navigation, route }: any) => {
   // LOCAL STATE
+  const { email, token_email } = route.params;
   const [value, setValue] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const onSubmit = () => {
-    saveUserPin(value.join(""));
+  const onSubmit = async () => {
+    if (value.length < 5) return;
 
+    const form = { ...route.params, token: value.join("") };
+    console.log(form);
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      navigation.navigate("ProfileCompleted");
-    }, 1500);
-  };
-
-  useEffect(() => {
-    if (value.length === 5) {
-      onSubmit();
+    const { status, message, data } = await verifyEmailCodeAPI(form);
+    setLoading(false);
+    if (status === "success") {
+      navigation.navigate("SignUpProfile", data);
+    } else {
+      setValue([]);
+      notificationToaster("error", {
+        text1: "",
+        text2: message,
+      });
     }
-  }, [value, setValue]);
+  };
 
   return (
     <View style={styles.container}>
-      {/* COMPONENT USED  */}
+      {/* COMPONENTS */}
       <LoaderWithOverlay loading={loading} />
-
       <View style={styles.align}>
         <RNAnimated animationDuration={700} appearFrom="right">
           <Text style={{ fontWeight: "bold", marginTop: 30, fontSize: 25 }}>
-            Set your PIN code
+            Verify it’s you
           </Text>
           <Text style={styles.greetings}>
-            We use state-of-the-art security measures to protect your
-            information at all times
+            We sent this code:{" "}
+            <Text style={{ fontWeight: "bold", color: COLORS.black }}>
+              "{token_email}"
+            </Text>{" "}
+            to ( <Text style={{ color: COLORS.primary }}>{email}</Text>
+            ). Enter it here to verify your identity{" "}
           </Text>
         </RNAnimated>
       </View>
 
       <View style={{ alignItems: "center", marginTop: 10 }}>
-        <PinCodeInput value={value} setValue={setValue} onSubmit={onSubmit} />
+        <PinInput value={value} setValue={setValue} onSubmit={onSubmit} />
       </View>
     </View>
   );
 };
 
-export default SecurityPin;
+export default OTPVerify;
 
 const styles = StyleSheet.create({
   container: {
@@ -73,7 +72,6 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     // borderColor: COLORS.primary,
     padding: 2,
-    paddingHorizontal: 12,
     justifyContent: "space-between",
     width: "90%",
     marginVertical: 12,

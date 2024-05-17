@@ -1,38 +1,63 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
-import { AntDesign } from "@expo/vector-icons";
+import React, { useState, useEffect } from "react";
 import { COLORS } from "../theme";
 import { useNavigation } from "@react-navigation/native";
-import Button from "../components/Button";
+import PinCodeInput from "../components/PinCodeInput";
+import RNAnimated from "react-native-animated-component";
+import { UserAccount } from "../store/userStore";
+import { notificationToaster } from "../components/Toast";
 
-import PinInput from "../components/PinInput";
-
-const OTPVerify = () => {
+const AuthenticateWithPin = () => {
   const navigation = useNavigation<any>();
+
+  // GLOBAL STATE
+  const {
+    userInfo: {
+      user: { full_name },
+    },
+    userPin,
+  } = UserAccount();
+
   // LOCAL STATE
   const [value, setValue] = useState([]);
+
+  const onSubmit = () => {
+    if (userPin === value.join("")) {
+      navigation.navigate("Dashboard");
+    } else {
+      setValue([]);
+      notificationToaster("error", {
+        text1: "",
+        text2: "Incorrect Pin",
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (value.length === 5) {
+      onSubmit();
+    }
+  }, [value, setValue]);
 
   return (
     <View style={styles.container}>
       <View style={styles.align}>
-        <Text style={{ fontWeight: "bold", marginTop: 30, fontSize: 25 }}>
-          Verify it’s you
-        </Text>
-        <Text style={styles.greetings}>
-          We send a code to ({" "}
-          <Text style={{ color: COLORS.primary }}>*****@mail.com</Text>
-          ). Enter it here to verify your identity Where would you like{" "}
-        </Text>
+        <RNAnimated animationDuration={700} appearFrom="right">
+          <Text style={{ fontWeight: "bold", marginTop: 30, fontSize: 25 }}>
+            Welcome back, {full_name}
+          </Text>
+          <Text style={styles.greetings}>To proceed, enter your pin</Text>
+        </RNAnimated>
       </View>
 
       <View style={{ alignItems: "center", marginTop: 10 }}>
-        <PinInput value={value} setValue={setValue} />
+        <PinCodeInput value={value} setValue={setValue} onSubmit={onSubmit} />
       </View>
     </View>
   );
 };
 
-export default OTPVerify;
+export default AuthenticateWithPin;
 
 const styles = StyleSheet.create({
   container: {
@@ -44,6 +69,7 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     // borderColor: COLORS.primary,
     padding: 2,
+    paddingHorizontal: 12,
     justifyContent: "space-between",
     width: "90%",
     marginVertical: 12,

@@ -22,9 +22,18 @@ import { COLORS } from "../theme";
 type IProps = {
   isOpened: any;
   closeModal: any;
+  formData: any;
+  setFormData: any;
+  setErrors: any;
 };
 
-export const CountriesModal = ({ isOpened, closeModal }: IProps) => {
+export const CountriesModal = ({
+  isOpened,
+  closeModal,
+  formData,
+  setFormData,
+  setErrors,
+}: IProps) => {
   const [data] = useState([
     {
       id: 1,
@@ -88,7 +97,18 @@ export const CountriesModal = ({ isOpened, closeModal }: IProps) => {
           </View>
           <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             {data.map((item: any, index: number) => (
-              <TouchableOpacity key={index} style={styles.row}>
+              <TouchableOpacity
+                key={index}
+                style={styles.row}
+                onPress={() => {
+                  setErrors(null);
+                  setFormData({
+                    ...formData,
+                    country: item.slug,
+                    country_full_name: item.name,
+                  });
+                }}
+              >
                 <View style={styles.inner}>
                   {item.flag}
                   <Text style={{ marginLeft: 10, color: COLORS.darkGray }}>
@@ -104,7 +124,9 @@ export const CountriesModal = ({ isOpened, closeModal }: IProps) => {
                     {item.name}
                   </Text>
                 </View>
-                {/* <AntDesign name="check" color={COLORS.green} size={25} /> */}
+                {formData?.country === item.slug && (
+                  <AntDesign name="check" color={COLORS.green} size={25} />
+                )}
               </TouchableOpacity>
             ))}
           </ScrollView>

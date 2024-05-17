@@ -5,6 +5,7 @@ import { COLORS } from "../theme";
 import { useNavigation } from "@react-navigation/native";
 import Button from "../components/Button";
 import { CheckBoxIcon, VerifyIdIcon } from "../assets/svg";
+import RNAnimated from "react-native-animated-component";
 
 const IdentifyVerify = () => {
   const navigation = useNavigation<any>();
@@ -13,15 +14,17 @@ const IdentifyVerify = () => {
   return (
     <View style={styles.container}>
       <View style={styles.align}>
-        <VerifyIdIcon />
-        <Text style={{ fontWeight: "bold", marginTop: 30, fontSize: 25 }}>
-          Verify your identity
-        </Text>
-        <Text style={styles.greetings}>
-          Where would you like{" "}
-          <Text style={{ color: COLORS.primary }}>Smartpay</Text> to send your
-          security code?
-        </Text>
+        <RNAnimated animationDuration={700} appearFrom="right">
+          <VerifyIdIcon />
+          <Text style={{ fontWeight: "bold", marginTop: 30, fontSize: 25 }}>
+            Verify your identity
+          </Text>
+          <Text style={styles.greetings}>
+            Where would you like{" "}
+            <Text style={{ color: COLORS.primary }}>Smartpay</Text> to send your
+            security code?
+          </Text>
+        </RNAnimated>
       </View>
 
       <View style={{ alignItems: "center" }}>
