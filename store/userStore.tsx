@@ -24,6 +24,7 @@ export const UserAccount = create<IUser>()(
       },
       saveUserPin: (data: any) => {
         set(() => ({
+          isAuthenticated: true,
           userPin: data,
         }));
       },

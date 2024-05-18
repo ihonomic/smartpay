@@ -5,6 +5,7 @@ import {
 import React from 'react'
 import { COLORS, SIZES, TYPOGRAPHY } from '../../theme'
 import { useNavigation } from '@react-navigation/native'
+import { StatusBar } from "expo-status-bar";
 
 
 const OnboardingItem = ({ item }) => {

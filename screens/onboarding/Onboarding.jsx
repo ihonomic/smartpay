@@ -1,10 +1,11 @@
 import { StyleSheet, Text, TouchableOpacity, View, FlatList, Animated } from "react-native";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import OnboardingItem from "./OnboardingItem";
 import Paginator from "./Paginator";
 import NextButton from "./NextButton";
 import { useNavigation } from "@react-navigation/native";
 import { COLORS } from "../../theme";
+import { UserAccount } from "../../store/userStore";
 
 
 const slides = [
@@ -26,6 +27,13 @@ const slides = [
 
 const OnBoardingScreen = () => {
   const navigation = useNavigation();
+
+  const { isAuthenticated } = UserAccount();
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigation.navigate('AuthenticateWithPin');
+    }
+  }, [isAuthenticated, navigation]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;

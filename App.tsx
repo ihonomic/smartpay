@@ -3,6 +3,7 @@ import { TouchableOpacity, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
+import { useEffect, useState } from "react";
 
 import {
   SignInScreen,
@@ -29,6 +30,8 @@ export default function App() {
   const { isAuthenticated } = UserAccount();
 
   const initialRoute = isAuthenticated ? "AuthenticateWithPin" : "OnBoarding";
+
+  // console.log(initialRoute, isAuthenticated);
 
   return (
     <NavigationContainer>
