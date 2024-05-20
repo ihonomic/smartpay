@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { COLORS } from "../theme";
 import { useNavigation } from "@react-navigation/native";
 import PinCodeInput from "../components/PinCodeInput";
@@ -9,6 +9,26 @@ import { notificationToaster } from "../components/Toast";
 
 const AuthenticateWithPin = () => {
   const navigation = useNavigation<any>();
+  // GLOBAL STATE
+  const { logoutUser } = UserAccount();
+
+  const onLogout = () => {
+    logoutUser();
+    navigation.navigate("SignIn");
+  };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: (props: any) => (
+        <Text
+          onPress={onLogout}
+          style={{ fontWeight: "bold", color: COLORS.primary, marginRight: 12 }}
+        >
+          Logout
+        </Text>
+      ),
+    });
+  }, []);
 
   // GLOBAL STATE
   const {

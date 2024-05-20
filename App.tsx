@@ -64,6 +64,7 @@ export default function App() {
         <Stack.Screen
           name="AuthenticateWithPin"
           component={AuthenticateWithPin}
+          options={{ headerLeft: (props) => <></> }}
         />
       </Stack.Navigator>
       <Toast />
